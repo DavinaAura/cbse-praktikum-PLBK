@@ -1,11 +1,13 @@
-import { useCart } from '../context/CartContext';
+import { useCart } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Cart() {
-  const { items, totalPrice, removeItem, clearCart, increment, decrement } = useCart();
+  const { items, totalPrice, removeItem, increment, decrement } = useCart();
+  const navigate = useNavigate();
 
   if (items.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: '3rem' }}>
+      <div style={{ textAlign: "center", padding: "3rem" }}>
         <h2>Keranjang Kosong</h2>
         <p>Belum ada produk di keranjang Anda.</p>
       </div>
@@ -13,94 +15,43 @@ export default function Cart() {
   }
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
+    <div className="cart-container">
       <h2>Keranjang Belanja</h2>
 
       {items.map((item) => (
-        <div
-          key={item.id}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '1rem',
-            padding: '1rem',
-            borderBottom: '1px solid #eee',
-          }}
-        >
-          <img
-            src={item.image}
-            alt={item.title}
-            style={{ width: '60px', height: '60px', objectFit: 'contain' }}
-          />
+        <div className="cart-item" key={item.id}>
+          <img src={item.image} alt={item.title} />
 
-          <div style={{ flex: 1 }}>
-            <h4 style={{ margin: '0 0 0.25rem' }}>{item.title}</h4>
-            <p style={{ margin: 0, color: '#666' }}>
-              ${item.price.toFixed(2)} x {item.quantity}
-            </p>
+          <div className="cart-info">
+            <h4>{item.title}</h4>
+            <p>${item.price.toFixed(2)} x {item.quantity}</p>
 
-            {/* 🔥 BUTTON + - */}
-            <div style={{ marginTop: '0.5rem' }}>
-              <button
-                onClick={() => decrement(item.id)}
-                style={{
-                  padding: '0.25rem 0.5rem',
-                  marginRight: '0.5rem',
-                  cursor: 'pointer',
-                }}
-              >
-                -
-              </button>
-
+            <div className="qty-control">
+              <button onClick={() => decrement(item.id)}>-</button>
               <span>{item.quantity}</span>
-
-              <button
-                onClick={() => increment(item.id)}
-                style={{
-                  padding: '0.25rem 0.5rem',
-                  marginLeft: '0.5rem',
-                  cursor: 'pointer',
-                }}
-              >
-                +
-              </button>
+              <button onClick={() => increment(item.id)}>+</button>
             </div>
           </div>
 
-          <p style={{ fontWeight: 'bold' }}>
+          <p className="price">
             ${(item.price * item.quantity).toFixed(2)}
           </p>
 
           <button
+            className="remove-btn"
             onClick={() => removeItem(item.id)}
-            style={{
-              background: '#e74c3c',
-              color: 'white',
-              border: 'none',
-              padding: '0.5rem',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
           >
             Hapus
           </button>
         </div>
       ))}
 
-      <div style={{ marginTop: '1.5rem', textAlign: 'right' }}>
+      <div className="cart-footer">
         <h3>Total: ${totalPrice.toFixed(2)}</h3>
 
         <button
-          onClick={clearCart}
-          style={{
-            padding: '0.75rem 2rem',
-            background: '#27AE60',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            fontSize: '1rem',
-            cursor: 'pointer',
-          }}
+          className="checkout-btn"
+          onClick={() => navigate("/checkout")}
         >
           Checkout
         </button>
